@@ -1,0 +1,27 @@
+<div class="result">
+  <span class="eyebrow">MONTAGEM CONCLUÍDA</span>
+  <h2>O teu vídeo está pronto <span aria-hidden="true">↗</span></h2>
+  <p>O vídeo foi criado com sucesso. Revê os momentos selecionados pela IA.</p>
+  @if (status().selectionMethod === 'local-ai') {
+    <span class="ai-badge">Selecionado com IA local</span>
+  }
+  <video
+    controls
+    playsinline
+    preload="metadata"
+    [src]="videoUrl()"
+    aria-label="Vídeo final DroneDirector"
+  ></video>
+  <div class="metadata">
+    <span
+      >Duração: <strong>{{ status().duration }} segundos</strong></span
+    ><span
+      ><strong>{{ status().selectedMoments }}</strong> momentos selecionados</span
+    >
+  </div>
+  <div class="actions">
+    <button class="secondary" (click)="reviewRequested.emit()">Voltar à revisão</button>
+    <a class="primary" [href]="downloadUrl()">↓ Descarregar vídeo</a
+    ><button class="secondary" (click)="restart.emit()">Criar outro vídeo</button>
+  </div>
+</div>

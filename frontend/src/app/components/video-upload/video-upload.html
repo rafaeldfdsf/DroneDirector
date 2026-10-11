@@ -1,0 +1,50 @@
+<div
+  class="dropzone"
+  [class.dragging]="dragging()"
+  (dragover)="dragOver($event)"
+  (dragleave)="dragging.set(false)"
+  (drop)="drop($event)"
+>
+  <div class="upload-symbol" aria-hidden="true">↑</div>
+  <h2>Arrasta os vídeos para aqui</h2>
+  <p>As tuas filmagens são o ponto de partida.</p>
+  <span class="or">ou</span>
+  <button class="secondary" type="button" (click)="picker.click()" [disabled]="disabled()">
+    Selecionar vídeos
+  </button>
+  <input
+    #picker
+    type="file"
+    accept=".mp4,.mov"
+    multiple
+    hidden
+    (change)="pick($event)"
+    [disabled]="disabled()"
+  />
+  <small>MP4 e MOV · Até 50 vídeos · 20 GB por ficheiro</small>
+</div>
+@if (files().length) {
+  <div class="file-heading">
+    <span>FILMAGENS SELECIONADAS</span><span>{{ files().length }} vídeos</span>
+  </div>
+  <ul class="files">
+    @for (file of files(); track $index) {
+      <li>
+        <span class="file-icon" aria-hidden="true">▶</span>
+        <div class="file-info">
+          <strong>{{ file.name }}</strong
+          ><small>{{ size(file.size) }}</small>
+        </div>
+        <button
+          class="remove"
+          type="button"
+          [attr.aria-label]="'Remover ' + file.name"
+          [disabled]="disabled()"
+          (click)="fileRemoved.emit($index)"
+        >
+          ×
+        </button>
+      </li>
+    }
+  </ul>
+}

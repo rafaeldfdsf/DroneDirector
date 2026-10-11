@@ -1,0 +1,59 @@
+<div class="processing" aria-live="polite">
+  @if (status().status !== 'failed') {
+    <div class="spinner" aria-hidden="true"></div>
+  }
+  <span class="eyebrow">A TUA MONTAGEM ESTÁ EM CURSO</span>
+  <h2>
+    {{
+      status().status === 'failed'
+        ? 'Não foi possível concluir a montagem'
+        : status().status === 'uploading'
+          ? 'A enviar as tuas filmagens…'
+          : status().status === 'exporting'
+            ? 'A exportar a tua montagem…'
+            : 'A analisar os teus vídeos…'
+    }}
+  </h2>
+  <p>{{ status().stage }}</p>
+  @if (status().status === 'uploading') {
+    <div class="bar-label">
+      <span>Upload</span
+      ><strong>{{ uploadPercent() === null ? 'A enviar…' : uploadPercent() + '%' }}</strong>
+    </div>
+    <div
+      class="bar"
+      role="progressbar"
+      aria-label="Progresso do upload"
+      [attr.aria-valuenow]="uploadPercent()"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <div [style.width.%]="uploadPercent() ?? 0"></div>
+    </div>
+  } @else {
+    <div class="bar-label">
+      <span>Progresso</span><strong>{{ status().progress }}%</strong>
+    </div>
+    <div
+      class="bar"
+      role="progressbar"
+      aria-label="Progresso da montagem"
+      [attr.aria-valuenow]="status().progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <div [style.width.%]="status().progress"></div>
+    </div>
+  }
+  <ul>
+    @for (step of steps(); track $index) {
+      <li [class]="phase($index)">
+        <span aria-hidden="true">{{
+          phase($index) === 'done' ? '✓' : phase($index) === 'active' ? '●' : '○'
+        }}</span
+        >{{ step }}
+      </li>
+    }
+  </ul>
+  <small>Podes continuar a usar o computador. Mantém esta página aberta até terminar.</small>
+</div>

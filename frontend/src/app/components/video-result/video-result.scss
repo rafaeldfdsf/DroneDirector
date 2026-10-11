@@ -1,0 +1,47 @@
+h2 {
+  font-size: 30px;
+  margin: 14px 0;
+}
+h2 span {
+  color: #b9f275;
+}
+p {
+  color: #97a4b0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+video {
+  width: 100%;
+  background: #070a0d;
+  border-radius: 12px;
+  margin-top: 20px;
+  aspect-ratio: 16 / 9;
+}
+.metadata {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  color: #96a3ae;
+  font-size: 13px;
+  padding: 18px 0 26px;
+}
+strong {
+  color: #dbe3eb;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+a {
+  text-decoration: none;
+}
+.ai-badge {
+  display: inline-block;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid #b9f27530;
+  background: #b9f27509;
+  color: #b9f275;
+  font-size: 11px;
+}

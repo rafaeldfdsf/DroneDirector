@@ -1,0 +1,145 @@
+<div class="review">
+  <span class="eyebrow">ESCOLHE O QUE FICA</span>
+  <h2>Revê os teus momentos</h2>
+  <p>A IA propôs uma montagem. Pré-visualiza, substitui e ordena os planos antes de exportar.</p>
+  <label for="review-prompt">Orientação extra para a IA</label>
+  <textarea
+    id="review-prompt"
+    maxlength="500"
+    rows="2"
+    [disabled]="busy()"
+    [value]="prompt()"
+    (input)="prompt.set($any($event.target).value)"
+  ></textarea>
+  <small
+    >Descreve o que queres destacar. O prompt orienta a seleção; revê os momentos antes de
+    exportar.</small
+  >
+  <div class="toolbar">
+    <button type="button" [disabled]="busy()" (click)="promptRequested.emit(prompt())">
+      Aplicar prompt
+    </button>
+    <button type="button" [disabled]="busy()" (click)="restore()">
+      Restaurar seleção automática
+    </button>
+  </div>
+  @for (warning of data().warnings; track warning) {
+    <p class="notice">{{ warning }}</p>
+  }
+  @if (error()) {
+    <p class="notice" role="alert">{{ error() }}</p>
+  }
+  @if (preview(); as clip) {
+    <div class="preview">
+      <strong
+        >{{ clip.filename }} · {{ clip.start | number: '1.1-1' }}–{{
+          clip.end | number: '1.1-1'
+        }}
+        s</strong
+      >
+      <video
+        #player
+        controls
+        playsinline
+        preload="metadata"
+        [src]="service.mediaUrl(clip.previewUrl)"
+        aria-label="Pré-visualização do momento"
+        (timeupdate)="limitPlayback(player)"
+        (error)="
+          previewError.set(
+            'Não foi possível abrir a pré-visualização. Tenta novamente ou escolhe outro momento.'
+          )
+        "
+      ></video>
+      @if (previewError()) {
+        <p role="alert">{{ previewError() }}</p>
+      }
+      <button (click)="preview.set(null)">Fechar pré-visualização</button>
+    </div>
+  }
+  <div class="columns">
+    <section aria-label="Momentos selecionados">
+      <h3>
+        A tua montagem <span>{{ seconds() | number: '1.1-1' }} / {{ data().duration }} s</span>
+      </h3>
+      @if (seconds() < data().duration - 0.05) {
+        <p class="notice">
+          A seleção é mais curta que o objetivo. Podes adicionar momentos ou exportar
+          {{ seconds() | number: '1.1-1' }} segundos.
+        </p>
+      }
+      @for (clip of selected(); track clip.id; let i = $index) {
+        <article
+          data-testid="selected-moment"
+          [attr.data-id]="clip.id"
+          [class.replacing]="replacement() === clip.id"
+        >
+          <img [src]="service.mediaUrl(clip.thumbnailUrl)" alt="" loading="lazy" />
+          <div class="info">
+            <strong>{{ i + 1 }}. {{ clip.filename }}</strong>
+            <span
+              >{{ clip.start | number: '1.1-1' }}–{{ clip.end | number: '1.1-1' }} s ·
+              {{ clip.end - clip.start | number: '1.1-1' }} segundos</span
+            >
+            <small>{{ clip.reasons.join(' · ') }}</small>
+          </div>
+          <div class="controls">
+            <button [disabled]="busy()" (click)="show(clip)">Pré-visualizar</button>
+            <button [disabled]="busy()" (click)="replacement.set(clip.id)">Substituir</button>
+            <button
+              [disabled]="busy() || i === 0"
+              aria-label="Mover para cima"
+              (click)="move(i, -1)"
+            >
+              ↑
+            </button>
+            <button
+              [disabled]="busy() || i === selected().length - 1"
+              aria-label="Mover para baixo"
+              (click)="move(i, 1)"
+            >
+              ↓
+            </button>
+            <button [disabled]="busy()" aria-label="Remover momento" (click)="remove(clip.id)">
+              Remover
+            </button>
+          </div>
+        </article>
+      } @empty {
+        <p>Seleciona um momento da biblioteca para começar.</p>
+      }
+    </section>
+    <section aria-label="Biblioteca de momentos">
+      <h3>
+        Outros momentos <span>{{ available().length }}</span>
+      </h3>
+      @if (replacement()) {
+        <p class="notice">Escolhe abaixo o momento que vai substituir o selecionado.</p>
+        <button (click)="replacement.set(null)">Cancelar substituição</button>
+      }
+      <div class="library">
+        @for (clip of available(); track clip.id) {
+          <article data-testid="available-moment">
+            <img [src]="service.mediaUrl(clip.thumbnailUrl)" alt="" loading="lazy" />
+            <div class="info">
+              <strong>{{ clip.filename }}</strong
+              ><span>{{ clip.start | number: '1.1-1' }}–{{ clip.end | number: '1.1-1' }} s</span
+              ><small>{{ clip.reasons.join(' · ') }}</small>
+            </div>
+            <div class="controls">
+              <button [disabled]="busy()" (click)="show(clip)">Pré-visualizar</button>
+              <button [disabled]="busy()" (click)="add(clip)">
+                {{ replacement() ? 'Substituir por este' : 'Adicionar' }}
+              </button>
+            </div>
+          </article>
+        } @empty {
+          <p>Todos os momentos disponíveis estão na montagem.</p>
+        }
+      </div>
+    </section>
+  </div>
+  <button class="primary export" [disabled]="busy() || !selected().length" (click)="export()">
+    {{ busy() ? 'A preparar…' : 'Exportar ' + (seconds() | number: '1.1-1') + ' segundos' }} ↗
+  </button>
+</div>

@@ -1,0 +1,140 @@
+<div class="app-shell">
+  <header>
+    <a class="brand" href="/" aria-label="DroneDirector início"
+      ><span class="brand-mark" aria-hidden="true">✣</span>Drone<span>Director</span></a
+    ><span class="local"><i></i> ESTÚDIO LOCAL</span>
+  </header>
+  <main [class.reviewing]="screen() === 'review'">
+    <section class="intro">
+      <span class="eyebrow">DAS TUAS FILMAGENS, UMA NOVA PERSPECTIVA</span>
+      <h1>Horas de voo.<br /><span>Momentos que ficam.</span></h1>
+      <p>Transforma as tuas filmagens nos melhores momentos, com inteligência artificial local.</p>
+      <div class="workflow">
+        <span>01 <b>Importa</b></span
+        ><i>→</i><span>02 <b>Personaliza</b></span
+        ><i>→</i><span>03 <b>Revê</b></span>
+      </div>
+      <div class="editor-visual" aria-hidden="true">
+        <div class="mountains"></div>
+        <div class="frame-corner tl"></div>
+        <div class="frame-corner br"></div>
+        <span class="visual-label">DRONEDIRECTOR / SELEÇÃO AUTOMÁTICA</span>
+        <div class="timeline">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="privacy">
+        <span aria-hidden="true">◈</span> IA local. As tuas filmagens ficam no teu computador.
+      </div>
+    </section>
+    <section class="workspace" aria-label="Criar montagem">
+      <div class="workspace-header">
+        <span>NOVA MONTAGEM</span><span class="tag">IA LOCAL</span>
+      </div>
+      @if (error()) {
+        <div class="error" role="alert">{{ error() }}</div>
+      }
+      @if (reviewLoadFailed()) {
+        <button class="primary" [disabled]="busy()" (click)="loadReview()">
+          Tentar abrir a revisão
+        </button>
+      }
+      @switch (screen()) {
+        @case ('upload') {
+          <app-video-upload
+            [files]="files()"
+            [disabled]="busy()"
+            (filesAdded)="addFiles($event)"
+            (fileRemoved)="removeFile($event)"
+          />
+          <fieldset>
+            <legend>Duração do vídeo final</legend>
+            <div class="duration-options">
+              @for (value of durations; track value) {
+                <label [class.selected]="duration() === value"
+                  ><input
+                    type="radio"
+                    name="duration"
+                    [value]="value"
+                    [checked]="duration() === value"
+                    (change)="duration.set(value)"
+                  /><strong>{{ value }}</strong
+                  ><span>segundos</span></label
+                >
+              }
+            </div>
+          </fieldset>
+          <label class="enhance"
+            ><input type="checkbox" [checked]="enhance()" (change)="enhance.set(!enhance())" /><span
+              ><strong>Melhorar automaticamente as cores</strong
+              ><small>Um toque subtil de contraste e saturação.</small></span
+            ><span class="sparkle" aria-hidden="true">✦</span></label
+          >
+          <label class="prompt-label" for="extra-prompt"
+            >Orientação extra para a IA <span>opcional</span></label
+          >
+          <textarea
+            id="extra-prompt"
+            maxlength="500"
+            rows="3"
+            [disabled]="busy()"
+            [value]="prompt()"
+            (input)="prompt.set($any($event.target).value)"
+            placeholder="Ex.: paisagem natural, rio e vegetação"
+          ></textarea>
+          <p class="footnote">
+            Descreve o que queres destacar. O prompt orienta a seleção; revê os momentos antes de
+            exportar.
+          </p>
+          <button
+            class="primary create"
+            type="button"
+            [disabled]="!files().length || busy()"
+            (click)="create()"
+          >
+            Analisar momentos <span aria-hidden="true">↗</span>
+          </button>
+          <p class="footnote">
+            A IA avalia a estética visual; a estabilidade ajuda a escolher movimentos suaves.
+          </p>
+        }
+        @case ('processing') {
+          <app-processing-progress
+            [status]="status()"
+            [uploadPercent]="uploadPercent()"
+            [enhanceColors]="enhance()"
+          />
+          @if (connectionLost()) {
+            <button class="primary" (click)="poll()">Retomar consulta de progresso</button>
+          }
+          @if (!busy()) {
+            <button class="secondary restart" (click)="reset()">Criar outro vídeo</button>
+          }
+        }
+        @case ('result') {
+          <app-video-result
+            [status]="status()"
+            [videoUrl]="service.resultUrl(status().projectId)"
+            [downloadUrl]="service.resultUrl(status().projectId, true)"
+            (restart)="reset()"
+            (reviewRequested)="loadReview()"
+          />
+        }
+        @case ('review') {
+          @if (review(); as data) {
+            <app-moment-review
+              [data]="data"
+              [busy]="busy()"
+              (promptRequested)="suggest($event)"
+              (exportRequested)="export($event)"
+            />
+          }
+        }
+      }
+    </section>
+  </main>
+  <footer>
+    <span>DroneDirector</span><span>Feito para dar outra vida às tuas filmagens.</span
+    ><span>100% local</span>
+  </footer>
+</div>

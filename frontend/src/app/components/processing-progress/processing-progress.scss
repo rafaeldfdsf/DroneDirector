@@ -1,0 +1,76 @@
+.processing {
+  padding: 20px 10px;
+}
+h2 {
+  font-size: 27px;
+  margin-bottom: 10px;
+}
+p,
+small {
+  color: #94a1ad;
+}
+small {
+  display: block;
+  margin-top: 28px;
+  font-size: 12px;
+}
+.spinner {
+  height: 42px;
+  width: 42px;
+  border: 2px solid #2e3e31;
+  border-top-color: #b9f275;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 28px;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+strong {
+  color: #b9f275;
+}
+.bar {
+  height: 7px;
+  border-radius: 8px;
+  background: #29333d;
+  overflow: hidden;
+}
+.bar div {
+  height: 100%;
+  background: #b9f275;
+  transition: width 0.4s;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 28px 0;
+}
+li {
+  padding: 9px 0;
+  color: #6e7b86;
+  font-size: 14px;
+}
+li span {
+  margin-right: 12px;
+}
+.done {
+  color: #bcc8d3;
+}
+.done span,
+.active {
+  color: #b9f275;
+}

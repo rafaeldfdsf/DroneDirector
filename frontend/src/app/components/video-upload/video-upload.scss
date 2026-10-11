@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+.dropzone {
+  text-align: center;
+  border: 1px dashed #49535d;
+  border-radius: 16px;
+  padding: 36px 20px;
+  background: #10161c;
+  transition: 0.2s;
+}
+.dropzone.dragging {
+  border-color: #b9f275;
+  background: #1d2c20;
+}
+.upload-symbol {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  color: #b9f275;
+  background: #b9f27512;
+  border: 1px solid #b9f27530;
+  border-radius: 12px;
+}
+h2 {
+  font-size: 20px;
+  margin: 0 0 9px;
+}
+p {
+  color: #929da8;
+  font-size: 14px;
+  margin: 0;
+}
+.or {
+  display: block;
+  color: #697680;
+  font-size: 12px;
+  margin: 16px;
+}
+small {
+  display: block;
+  font-size: 12px;
+  color: #88939d;
+  margin-top: 16px;
+}
+.file-heading {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 0 10px;
+  color: #929da8;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.files {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 260px;
+  overflow: auto;
+}
+li {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid #2c353e;
+  border-radius: 10px;
+  background: #151c24;
+  gap: 12px;
+}
+.file-icon {
+  color: #a8b3bf;
+  padding: 10px;
+  border-radius: 8px;
+  background: #242f3a;
+  font-size: 10px;
+}
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+strong {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+li small {
+  margin-top: 4px;
+}
+.remove {
+  border: 0;
+  background: transparent;
+  color: #a9b3bc;
+  font-size: 24px;
+  padding: 3px 9px;
+  cursor: pointer;
+}
